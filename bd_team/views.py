@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 
-menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
+#menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
+menu = [{'title': "Добавить игрока", 'url_name': 'add_player'}
+]
 
 def main_page(request):
    return render(request, 'bd_team/base.html', {'menu':menu})
