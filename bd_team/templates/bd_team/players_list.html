@@ -1,0 +1,9 @@
+{% extends 'bd_team/base.html' %}
+
+{% block content %}
+<div class="list-group">
+  {% for p in players%}
+   <a href="#" class="list-group-item list-group-item-action">{{p.number}} Номер. {{p.name}}   {{ p.role}}</a>
+  {% endfor %}
+</div>
+{% endblock %}
