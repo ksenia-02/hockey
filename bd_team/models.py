@@ -3,20 +3,31 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
+class Status(models.Model):
+
+    name = models.CharField(max_length=100, verbose_name='Статус игры')
+
+    def __str__(self):
+        return self.name
+
 class Chart_Games(models.Model):
 
     date = models.DateField(null=True, verbose_name= 'Дата')
     opponent = models.CharField(max_length=100, null = True, verbose_name= 'Соперник')
     area = models.BooleanField(null = True, default=False, verbose_name='Домашняя игра')
-    score = models.CharField(max_length=5, validators=[
+    role = models.ForeignKey('Status', on_delete=models.PROTECT, null=False, verbose_name="Статус игры", default = 1)
+    score = models.CharField(max_length=5, null = True, validators=[
         RegexValidator(
             regex=r'\d+:\d+',
             message='Формат: 0:0'
         )
     ], verbose_name='Счёт')
 
+    class Meta():
+        ordering = ['date']
+
     def __str__(self):
-        return self.name
+        return f"{self.id}"
 
 class Category_Player(models.Model):
 
