@@ -10,6 +10,7 @@ urlpatterns = [
     path('listplayer/', ListPlayer.as_view(), name = 'list_players'),
     path('listgame/',  ListChartGame.as_view(), name = 'list_game'),
     path('player/<int:player_id>', show_player_card, name='player'),
+    path('update/<int:player_id>', NewsUpdateView.as_view(), name = 'update_player')
 ]
 
 if settings.DEBUG:

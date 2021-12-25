@@ -18,9 +18,9 @@ function changePage(num){
     <div class="btn-group" role="group" aria-label="Basic example">
       {% for p in object_list %}
         <tr>
-        <th><a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.number}}.</a></th>
-        <th> <a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.name}}   </a></th>
-        <th ><a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.role}}   </a></th>
+        <th><a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.number}}.</a></th>
+        <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.name}}   </a></th>
+        <th ><a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.role}}   </a></th>
         </tr>
     </div>
       {% endfor %}

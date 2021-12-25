@@ -1,26 +1,31 @@
 {% extends 'bd_team/base.html' %}
-
+ <head>
+  <style>
+   body {
+    margin: 5;
+   }
+  </style>
+ </head>
 {% block content %}
-    {% if player.photo%}
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+     <div class="row row-cols-2 row-cols-sm-8 row-cols-md-8 g-10">
         <div class="col">
           <div class="card shadow-sm">
-            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-
+           <img src="{{ player.photo.url}}" class="img-thumbnail" width="200"  hspace="25">
             <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <h2 class="card-text">{{player.name}}</h2>
+                <table class ="table table-striped table-hover" >
+                    <tr><th><p class="card-text">Номер</p></th> <th scope="col">{{player.number}}</th></tr>
+                    <tr><th><p class="card-text">Дата рождения</p></th> <th scope="col">{{player.date_birth}}</th></tr>
+                    <tr><th><p class="card-text">Амплуа</p></th> <th scope="col">{{player.role}}</th></tr>
+                    <tr><th><p class="card-text">Гражданство</p></th> <th scope="col">{{player.citizenship}}</th></tr>
+                </table>
               <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
+
+                  <a href="{{ player.get_absolute_url2}}" ><button type="button" class="btn btn-sm btn-outline-secondary">Изменить</button></a>
               </div>
             </div>
           </div>
         </div>
+        </div>
 
-    </div>
-  </div>
-    {% endif%}
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from .forms import *
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 
 #menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
 menu = [{'title': "Добавить игрока", 'url_name': 'add_player'},
@@ -28,13 +28,19 @@ def add_page_player(request):
    }
    return render(request, 'bd_team/add_player.html', context)
 
+class NewsUpdateView(UpdateView):
+   model = Player
+   template_name = 'bd_team/add_player.html'
+
+   field = ['name', 'date_birth', 'citizenship', 'role', 'number', 'photo']
+
+
 def show_player_card(request, player_id):
    player = get_object_or_404(Player, pk = player_id )
    context = {
       'title':'Карточка игрока',
       'menu': menu,
       'player': player,
-       'head' : ['Номер', 'Имя', 'Амплуа', 'Дата рождения', 'Гражданство', 'Фото']
    }
    return render(request, 'bd_team/card_player.html', context)
 
@@ -48,7 +54,6 @@ class ListPlayer(ListView):
       context['title'] = "Список игроков"
       context['head'] = ['Номер', 'Имя', 'Амплуа']
       return context
-
 
 class ListChartGame(ListView):
    model = Chart_Games
