@@ -1,9 +1,31 @@
 {% extends 'bd_team/base.html' %}
 
+<script>
+function changePage(num){
+ window.location.href = 'add_player';
+}
+</script>
+
 {% block content %}
-<div class="list-group">
-  {% for p in players%}
-   <a href="#" class="list-group-item list-group-item-action">{{p.number}} Номер. {{p.name}}   {{ p.role}}</a>
-  {% endfor %}
-</div>
+    {% if object_list %}
+<table class="table table-striped table-hover">
+    <tr>
+      {% for h in head %}
+      <th scope="col">{{ h }}</th>
+      {% endfor %}
+    </tr>
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+      {% for p in object_list %}
+        <tr>
+        <th><a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.number}}.</a></th>
+        <th> <a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.name}}   </a></th>
+        <th ><a href="{{ p.get_absolute_url }}"  style="color:black;" class="nav-link"> {{ p.role}}   </a></th>
+        </tr>
+    </div>
+      {% endfor %}
+</table>
+      {% else %}
+     <p>Нет данных об игроках</p>
+      {% endif %}
 {% endblock %}

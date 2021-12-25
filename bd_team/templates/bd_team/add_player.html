@@ -1,15 +1,20 @@
 {% extends 'bd_team/base.html' %}
 
+<head>
+
+</head>>
 {% block content %}
 <form action="{%url 'add_player' %}" method = "post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="form-error">{{ form.non_field_errors }}</div>
-
+    <table>
 {% for f in form %}
-      <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+      <tr><th><label class="form-label" for ="{{ f.id_for_label }}"></th><th> {{f.label}}:</th><th> </label>{{ f }}</th></tr>
       <div class="form-error">{{ f.errors }}</div>
 {% endfor %}
+    </table>
 <button type="submit">Добавить</button>
+
 </form>
 {% endblock %}

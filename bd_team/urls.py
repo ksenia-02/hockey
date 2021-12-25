@@ -6,6 +6,7 @@ from .views import *
 urlpatterns = [
     path('', main_page, name = 'main_page'),
     path('addplayer/', add_page_player, name = 'add_player'),
-    path('listplayer/',  post_list_players, name = 'list_players'),
+    path('listplayer/', ListPlayer.as_view(), name = 'list_players'),
     path('listgame/',  ListChartGame.as_view(), name = 'list_game'),
+    path('player/<int:player_id>', show_player_card, name='player'),
 ]

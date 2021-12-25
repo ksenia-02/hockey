@@ -1,6 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.utils import timezone
 
 class Status(models.Model):
@@ -44,9 +45,13 @@ class Player(models.Model):
     role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null = True, verbose_name="Амплуа")
     number = models.IntegerField(null = False,  unique = True, verbose_name = "Номер")
     photo = models.ImageField(null = True)
+    #slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('player', kwargs={'player_id':self.pk})
 
 class Player_Rating(models.Model):
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from .forms import *
 from django.views.generic import ListView
@@ -15,7 +15,7 @@ def main_page(request):
 def add_page_player(request):
 
    if request.method == 'POST':
-      form = AddPlayer(request.POST)
+      form = AddPlayer(request.POST, request.FILES)
       if form.is_valid():
          form.save()
          return redirect('main_page')
@@ -28,14 +28,26 @@ def add_page_player(request):
    }
    return render(request, 'bd_team/add_player.html', context)
 
-def post_list_players(request):
-   players = Player.objects.all()
+def show_player_card(request, player_id):
+   player = get_object_or_404(Player, pk = player_id )
    context = {
-      'title':'Игроки',
+      'title':'Карточка игрока',
       'menu': menu,
-      'players': players,
+      'player': player,
    }
-   return render(request, 'bd_team/players_list.html', context)
+   return render(request, 'bd_team/card_player.html', context)
+
+class ListPlayer(ListView):
+   model = Player
+   template_name = 'bd_team/players_list.html'
+
+   def get_context_data(self, *, object_list=None, **kwargs):
+      context = super().get_context_data(**kwargs)
+      context['menu'] = menu
+      context['title'] = "Список игроков"
+      context['head'] = ['Номер', 'Имя', 'Амплуа']
+      return context
+
 
 class ListChartGame(ListView):
    model = Chart_Games
@@ -45,5 +57,8 @@ class ListChartGame(ListView):
       context = super().get_context_data(**kwargs)
       context['menu'] = menu
       context['title'] = "Расписание игр"
-      context['head'] = ['Дата', 'Соперник', 'Дом', 'Счёт']
+      context['head'] = ['', '']
       return context
+
+#   def get_queryset(self):
+#       return Chart_Games.objects.filter(is_published=True)
