@@ -34,6 +34,7 @@ def show_player_card(request, player_id):
       'title':'Карточка игрока',
       'menu': menu,
       'player': player,
+       'head' : ['Номер', 'Имя', 'Амплуа', 'Дата рождения', 'Гражданство', 'Фото']
    }
    return render(request, 'bd_team/card_player.html', context)
 

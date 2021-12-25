@@ -44,8 +44,7 @@ class Player(models.Model):
     citizenship = models.CharField(max_length= 100, null = True, verbose_name="Гражданство")
     role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null = True, verbose_name="Амплуа")
     number = models.IntegerField(null = False,  unique = True, verbose_name = "Номер")
-    photo = models.ImageField(null = True)
-    #slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    photo = models.ImageField(null = True, upload_to="photos/",height_field=None, width_field=None,)
 
     def __str__(self):
         return self.name

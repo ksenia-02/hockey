@@ -9,7 +9,7 @@ class AddPlayer(forms.ModelForm):
 
     class Meta:
         model = Player
-        fields = ['name','date_birth','role','citizenship','number', 'photo' ]
+        fields = ['name','date_birth','role','citizenship','number', 'photo']
         widgets = {
             'name': forms.TextInput(attrs = {'class':'form-control'}),
             'date': forms.TextInput(attrs={'class': 'form-control'}),
