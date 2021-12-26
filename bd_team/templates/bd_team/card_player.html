@@ -1,10 +1,5 @@
 {% extends 'bd_team/base.html' %}
- <head>
-  <style>
-   body {
-    margin: 5;
-   }
-  </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
  </head>
 {% block content %}
      <div class="row row-cols-2 row-cols-sm-8 row-cols-md-8 g-10">
@@ -30,4 +25,5 @@
         </div>
         </div>
 
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 {% endblock %}

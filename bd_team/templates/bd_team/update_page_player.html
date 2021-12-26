@@ -3,16 +3,13 @@
 {% block content %}
 <form method = "post" enctype="multipart/form-data">
     {% csrf_token %}
-
-    <div class="form-error">{{ form.non_field_errors }}</div>
+<div class="form-error">{{ form.non_field_errors }}</div>
     <table>
 {% for f in form %}
       <tr><th><label class="form-label" for ="{{ f.id_for_label }}"></th><th> {{f.label}}:</th><th> </label>{{ f }}</th></tr>
       <div class="form-error">{{ f.errors }}</div>
 {% endfor %}
+    <tr> <th></th><th></th><th>  <button class="btn btn-success" type="submit">Изменить</button></th></tr>
     </table>
-<button type="submit">Изменить</button>
-
-
 </form>
 {% endblock %}

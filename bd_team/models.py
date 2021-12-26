@@ -11,24 +11,28 @@ class Status(models.Model):
     def __str__(self):
         return self.name
 
-class Chart_Games(models.Model):
+class Game(models.Model):
 
     date = models.DateField(null=True, verbose_name= 'Дата')
     opponent = models.CharField(max_length=100, null = True, verbose_name= 'Соперник')
     area = models.BooleanField(null = True, default=False, verbose_name='Домашняя игра')
     role = models.ForeignKey('Status', on_delete=models.PROTECT, null=False, verbose_name="Статус игры", default = 1)
-    score = models.CharField(max_length=5, null = True, validators=[
+    score = models.CharField(max_length=5, null = True, blank = True, validators=[
         RegexValidator(
             regex=r'\d+:\d+',
             message='Формат: 0:0'
         )
     ], verbose_name='Счёт')
+    judge = models.CharField(max_length=100, null = True,blank = True, verbose_name= 'Cудья')
 
     class Meta():
         ordering = ['date']
 
     def __str__(self):
         return f"{self.id}"
+
+    def get_absolute_url(self):
+        return reverse('update_game', kwargs={'pk': self.pk})
 
 class Category_Player(models.Model):
 
@@ -47,6 +51,8 @@ class Player(models.Model):
     photo = models.ImageField(null = True, upload_to="photos/")
     base = models.BooleanField(default=False, verbose_name='Основа')
 
+    class Meta():
+        ordering = ['number']
     def __str__(self):
         return self.name
 

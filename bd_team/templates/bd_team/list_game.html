@@ -8,16 +8,23 @@
       <th scope="col">{{ h }}</th>
       {% endfor %}
     </tr>
-      {% for str in object_list %}
+      {% for g in object_list %}
         <tr>
-        <th scope="col">{{ str.date }}</th>
-        <th scope="col">{{ str.opponent }}</th>
-        <th scope="col">{{ str.area }}</th>
-        <th scope="col">{{ str.score }}</th>
+         <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">{{ g.date }}</a></th>
+         <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">{{ g.opponent }}</a></th>
+        {%if g.area %}
+             <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">+</a></th>
+        {% else %}
+             <th><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">-</a></th>
+        {% endif %}
+         <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">{{ g.role }}</a></th>
+         <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">{{ g.score|default_if_none:'-' }}</a></th>
+         <th scope="col"><a href="{{ g.get_absolute_url}}"  style="color:black;" class="nav-link">{{ g.judge|default_if_none:'-' }}</a></th>
         </tr>
       {% endfor %}
 </table>
       {% else %}
      <p>Нет данных об играх</p>
       {% endif %}
+     <a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit">Добавить матч</button></a>
 {% endblock %}
