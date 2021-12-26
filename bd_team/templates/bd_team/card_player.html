@@ -20,8 +20,10 @@
                     <tr><th><p class="card-text">Гражданство</p></th> <th scope="col">{{player.citizenship}}</th></tr>
                 </table>
               <div class="d-flex justify-content-between align-items-center">
-
-                  <a href="{{ player.get_absolute_url2}}" ><button type="button" class="btn btn-sm btn-outline-secondary">Изменить</button></a>
+                <div class="btn-group">
+                 <a href="{%url 'update_player' player.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">Изменить</button></a>
+                 <a href="{%url 'delete_player' player.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">Удалить</button></a>
+                </div>
               </div>
             </div>
           </div>

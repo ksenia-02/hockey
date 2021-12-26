@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+
 from .models import *
 from .forms import *
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DeleteView
 
 #menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
 menu = [{'title': "Добавить игрока", 'url_name': 'add_player'},
@@ -30,13 +32,17 @@ def add_page_player(request):
 
 class NewsUpdateView(UpdateView):
    model = Player
-   template_name = 'bd_team/add_player.html'
+   template_name = 'bd_team/update_page_player.html'
+   form_class = AddPlayer
 
-   field = ['name', 'date_birth', 'citizenship', 'role', 'number', 'photo']
-
+class NewsDeleteView(DeleteView):
+   model = Player
+   fields = '__all__'
+   success_url = reverse_lazy('list_players')
+   template_name = 'bd_team/delete_player.html'
 
 def show_player_card(request, player_id):
-   player = get_object_or_404(Player, pk = player_id )
+   player = get_object_or_404(Player, pk = player_id)
    context = {
       'title':'Карточка игрока',
       'menu': menu,

@@ -45,17 +45,13 @@ class Player(models.Model):
     role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null = True, verbose_name="Амплуа")
     number = models.IntegerField(null = False,  unique = True, verbose_name = "Номер")
     photo = models.ImageField(null = True, upload_to="photos/")
-
+    base = models.BooleanField(default=False, verbose_name='Основа')
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('player', kwargs={'player_id':self.pk})
-
-    def get_absolute_url2(self):
-        return reverse('update_player', kwargs={'player_id':self.pk})
-
 
 class Player_Rating(models.Model):
 

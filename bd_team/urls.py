@@ -9,8 +9,9 @@ urlpatterns = [
     path('addplayer/', add_page_player, name = 'add_player'),
     path('listplayer/', ListPlayer.as_view(), name = 'list_players'),
     path('listgame/',  ListChartGame.as_view(), name = 'list_game'),
-    path('player/<int:player_id>', show_player_card, name='player'),
-    path('update/<int:player_id>', NewsUpdateView.as_view(), name = 'update_player')
+    path('player/<int:player_id>/', show_player_card, name='player'),
+    path('update/<int:pk>/', NewsUpdateView.as_view(), name = 'update_player'),
+    path('delete/<int:pk>/', NewsDeleteView.as_view(), name='delete_player')
 ]
 
 if settings.DEBUG:
