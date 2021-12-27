@@ -33,7 +33,7 @@ class Game(models.Model):
         ordering = ['date']
 
     def __str__(self):
-        return f"{self.role}_{self.id}_{self.opponent}_{self.date}"
+        return f"{self.id}.{self.opponent}_{self.date}"
 
     def get_absolute_url(self):
         return reverse('game_info', kwargs={'game_id': self.pk})

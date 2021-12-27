@@ -6,13 +6,15 @@
       {% for h in head %}
       <th scope="col">{{ h }}</th>
       {% endfor %}
+        {% for g in p_game%}
     </tr>
         <tr>
-         <th scope="col">{{ p_game.id }}</th>
-         <th scope="col">{{ p_game.player }}</th>
-         <th scope="col">{{ p_game.count_washers }}</th>
-         <th scope="col">{{ p_game.yellow_card }}</th>
-         <th scope="col">{{ p_game.read_card }}</th>
+         <th scope="col">{{ g.id }}</th>
+         <th scope="col">{{ g.player }}</th>
+         <th scope="col">{{ g.count_washers }}</th>
+         <th scope="col">{{ g.yellow_card }}</th>
+         <th scope="col">{{ g.read_card }}</th>
         </tr>
+    {%endfor%}
 </table>
 {% endblock %}

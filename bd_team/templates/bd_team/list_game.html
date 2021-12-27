@@ -24,7 +24,7 @@
          <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.score|default_if_none:'-' }}</a></th>
          <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.judge|default_if_none:'-' }}</a>
          <th><a href="{%url 'add_game_info' g.id %}"  ><button class="btn btn-success" type="submit"></button></a></th>
-         <th><a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit"></button></a></th>
+         <th><a href="{%url 'add_archive' g.id%}"  ><button class="btn btn-success" type="submit"></button></a></th>
         </tr>
       {% endfor %}
 </table>
