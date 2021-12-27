@@ -8,7 +8,7 @@ from django.views.generic.edit import FormMixin
 
 from .models import *
 from .forms import *
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView, TemplateView
 
 # menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
 menu = [{'title': "Игроки", 'url_name': 'list_players'},
@@ -116,6 +116,7 @@ class ListChartGame(ListView):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
         context['title'] = "Расписание игр"
+        context['but'] = "Архивировать"
         context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
         return context
 
@@ -130,6 +131,7 @@ class ListArchiveGame(ListView):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
         context['title'] = "Расписание игр"
+        context['but'] = 'Активировать'
         context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
         return context
 
@@ -209,6 +211,3 @@ class RegisterUser(CreateView):
          context['title'] = "Добавление пользователя"
          context['but'] = "Добавить"
          return context
-
-class PlayerListDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Player

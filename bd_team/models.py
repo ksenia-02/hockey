@@ -1,8 +1,23 @@
+from django.contrib.auth.models import User, AbstractUser, Group
 from django.core.validators import RegexValidator
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+
+#class Group_(Group):
+
+#class User(AbstractUser):
+#    COACH = 1
+#    MANAGER = 2
+#    PLAYER = 3
+
+#    ROLE_CHOICES = (
+#        (COACH, 'Coach'),
+#        (MANAGER, 'Manager'),
+#        (PLAYER, 'Player'),
+#    )
+#    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
 
 class Status(models.Model):
 

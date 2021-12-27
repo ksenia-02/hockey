@@ -23,7 +23,6 @@ urlpatterns = [
     path('updategame/<int:pk>/', GameUpdateView.as_view(), name='update_game'),
     path('deletegame/<int:pk>/', GameDeleteView.as_view(), name='delete_game'),
 
-    path('<int:pk>/', PlayerListDetailView.as_view())
 ]
 
 if settings.DEBUG:
