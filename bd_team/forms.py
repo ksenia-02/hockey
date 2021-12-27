@@ -23,3 +23,15 @@ class GameForm(forms.ModelForm):
     class Meta:
         model = Game
         fields = ['date', 'opponent', 'area', 'role', 'score']
+
+class GamePlayerForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Player_Game
+        fields = ['player','game', 'count_washers', 'yellow_card', 'read_card']
+
+class ArchiveGameNum(forms.Form):
+    num = forms.IntegerField(label='Номер матча')

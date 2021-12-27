@@ -71,7 +71,6 @@ class GameDeleteView(DeleteView):
    success_url = reverse_lazy('list_game')
    template_name = 'bd_team/delete_game.html'
 
-
 def show_player_card(request, player_id):
    player = get_object_or_404(Player, pk = player_id)
    context = {
@@ -80,9 +79,6 @@ def show_player_card(request, player_id):
       'player': player,
    }
    return render(request, 'bd_team/card_player.html', context)
-
-def home(request):
-   return render(request, 'home.html')
 
 class ListPlayer(ListView):
    model = Player
@@ -103,8 +99,47 @@ class ListChartGame(ListView):
       context = super().get_context_data(**kwargs)
       context['menu'] = menu
       context['title'] = "Расписание игр"
-      context['head'] = ['Дата', 'Соперник','Домашняя игра', 'Статус', 'Счёт', 'Судья']
+      context['head'] = ['№','Дата', 'Соперник','Домашняя игра', 'Статус', 'Счёт', 'Судья']
       return context
 
 #   def get_queryset(self):
 #       return Chart_Games.objects.filter(is_published=True)
+
+def game_info(request, game_id):
+   print(game_id)
+   p_game = get_object_or_404(Player_Game, game=game_id)
+   if Player_Game.check_game_status(game_id):
+      context = {
+         'title': 'Состав игроков',
+         'menu': menu,
+         'p_game': p_game,
+         'head' : ['№', 'Игрок', 'Кол-во шайб', 'Желтая карточка', 'Красная карточка'],
+      }
+      return render(request, 'bd_team/info_game.html', context)
+   else:
+      return redirect('list_game')
+
+class GamePlayerCreateView(CreateView):
+   model = Player_Game
+   template_name = 'bd_team/add_game_info.html'
+   fields = ['player', 'count_washers', 'yellow_card', 'read_card']
+   fields = '__all__'
+
+def add_game_info(request, game_id):
+   if Player_Game.check_game_status(game_id):
+      if request.method == 'POST':
+         form = GamePlayerForm(request.POST)
+         if form.is_valid():
+            form.save()
+            return redirect('list_game')
+      else:
+         form = GamePlayerForm(initial={'game': game_id})
+      context = {
+          'game_id':game_id,
+          'title':'Добавление в состав игры',
+          'menu': menu,
+          'form': form,
+      }
+      return render(request, 'bd_team/add_game_info.html', context)
+   else:
+      return redirect('list_game')

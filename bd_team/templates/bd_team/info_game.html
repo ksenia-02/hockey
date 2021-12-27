@@ -1,0 +1,18 @@
+{% extends 'bd_team/base.html' %}
+
+{% block content %}
+<table class="table table-striped table-hover">
+    <tr>
+      {% for h in head %}
+      <th scope="col">{{ h }}</th>
+      {% endfor %}
+    </tr>
+        <tr>
+         <th scope="col">{{ p_game.id }}</th>
+         <th scope="col">{{ p_game.player }}</th>
+         <th scope="col">{{ p_game.count_washers }}</th>
+         <th scope="col">{{ p_game.yellow_card }}</th>
+         <th scope="col">{{ p_game.read_card }}</th>
+        </tr>
+</table>
+{% endblock %}

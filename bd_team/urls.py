@@ -14,6 +14,9 @@ urlpatterns = [
     path('delete/<int:pk>/', PlayerDeleteView.as_view(), name='delete_player'),
 
     path('addgame/', GameCreateView.as_view(), name='add_game'),
+    path('addinfogame/<int:game_id>/', add_game_info, name='add_game_info'),
+
+    path('infogame/<int:game_id>/', game_info, name = 'game_info'),
     path('updategame/<int:pk>/', GameUpdateView.as_view(), name='update_game'),
     path('deletegame/<int:pk>/', GameDeleteView.as_view(), name='delete_game')
 ]
