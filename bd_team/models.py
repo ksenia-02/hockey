@@ -70,7 +70,7 @@ class Player(models.Model):
     citizenship = models.CharField(max_length=100, null=True, verbose_name="Гражданство")
     role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null=True, verbose_name="Амплуа")
     number = models.IntegerField(null=False, unique=True, verbose_name="Номер")
-    photo = models.ImageField(null=True, upload_to="photos/", verbose_name="Фото")
+    photo = models.ImageField(null=True,blank = True,  upload_to="photos/", verbose_name="Фото")
     base = models.BooleanField(default=False, verbose_name='Основа')
 
     class Meta():
@@ -104,3 +104,13 @@ class Player_Game(models.Model):
         game = Game.objects.get(id=id_game)
         print(game.check_status())
         return game.check_status()
+
+
+class BoardPlayer(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, blank = True, verbose_name='Игрок')
+    indicator = models.IntegerField(default=0, verbose_name='Красная карточка')
+    biog = models.TextField(null = True)
+
+    def __str__(self):
+        return self.head
+

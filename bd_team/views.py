@@ -1,5 +1,4 @@
 import json
-
 import pandas as pd
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
@@ -13,7 +12,6 @@ from .forms import *
 menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Расписание матчей", 'url_name': 'list_game'},
         {'title': "Архив сыгранных матчей", 'url_name': 'archive_game'},
-        #        {'title': "Статистика игроков", 'url_name': 'stat_player'},
         {'title': "Выход", 'url_name': 'logout'},
         ]
 m_a = [{'title': "Выйти", 'url_name': 'list_players'}, ]
@@ -64,19 +62,20 @@ class PlayerDeleteView(DeleteView):
 class GameCreateView(CreateView):
     model = Game
     template_name = 'bd_team/add_game.html'
+    success_url = reverse_lazy('list_пфьу')
     fields = '__all__'
 
 
 class GameUpdateView(UpdateView):
-    model = Game
+    model = Player_Game
     template_name = 'bd_team/update_game.html'
     success_url = reverse_lazy('list_game')
-    form_class = GameForm
+    form_class = GamePlayerForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['menu'] = menu
-        context['title'] = "Изменение данных об игре"
+        context['title'] = "Изменение данных"
         return context
 
 

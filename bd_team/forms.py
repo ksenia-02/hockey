@@ -40,10 +40,14 @@ class GamePlayerForm(forms.ModelForm):
         model = Player_Game
         fields = ['player', 'game', 'count_washers', 'yellow_card', 'read_card']
 
+class BoardForm(forms.ModelForm):
 
-class ArchiveGameNum(forms.Form):
-    num = forms.IntegerField(label='Номер матча')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+    class Meta:
+        model = BoardPlayer
+        fields = ['player', 'indicator', 'biog']
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))

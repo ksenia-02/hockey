@@ -5,7 +5,9 @@
      <div class="row row-cols-2 row-cols-sm-8 row-cols-md-8 g-10">
         <div class="col">
           <div class="card shadow-sm">
+              {% if player.photo%}
            <img src="{{ player.photo.url}}" class="img-thumbnail" width="200"  hspace="25">
+              {%endif%}
             <div class="card-body">
                 <h2 class="card-text">{{player.name}}</h2>
                 <table class ="table table-striped table-hover" >
