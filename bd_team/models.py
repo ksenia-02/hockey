@@ -5,21 +5,6 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
-
-# class Group_(Group):
-
-# class User(AbstractUser):
-#    COACH = 1
-#    MANAGER = 2
-#    PLAYER = 3
-
-#    ROLE_CHOICES = (
-#        (COACH, 'Coach'),
-#        (MANAGER, 'Manager'),
-#        (PLAYER, 'Player'),
-#    )
-#    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
-
 class Status(models.Model):
     name = models.CharField(max_length=100, verbose_name='Статус игры')
 
@@ -72,6 +57,9 @@ class Player(models.Model):
     number = models.IntegerField(null=False, unique=True, verbose_name="Номер")
     photo = models.ImageField(null=True,blank = True,  upload_to="photos/", verbose_name="Фото")
     base = models.BooleanField(default=False, verbose_name='Основа')
+    indicator = models.IntegerField(default=0, verbose_name='Показатель')
+    biog = models.TextField(null = True, blank = True, verbose_name='Отображаемая информация')
+    public_photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Публичное Фото")
 
     class Meta():
         ordering = ['number']
@@ -104,13 +92,4 @@ class Player_Game(models.Model):
         game = Game.objects.get(id=id_game)
         print(game.check_status())
         return game.check_status()
-
-
-class BoardPlayer(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, blank = True, verbose_name='Игрок')
-    indicator = models.IntegerField(default=0, verbose_name='Красная карточка')
-    biog = models.TextField(null = True)
-
-    def __str__(self):
-        return self.head
 

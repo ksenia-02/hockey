@@ -14,14 +14,14 @@ menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Архив сыгранных матчей", 'url_name': 'archive_game'},
         {'title': "Выход", 'url_name': 'logout'},
         ]
-m_a = [{'title': "Выйти", 'url_name': 'list_players'}, ]
-
 
 def main_page(request):
     if not request.user.has_perm('auth.view_user'):
         return redirect('login')
     else:
-        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная'})
+
+        player = Player.objects.all().order_by('name')
+        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная', 'player':player})
 
 
 def add_page_player(request):
