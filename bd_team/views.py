@@ -1,34 +1,29 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
-from django.views import generic
-from django.views.generic.edit import FormMixin
-import pandas as pd
 import json
 
+import pandas as pd
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
 from django.core import serializers
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 
-from .models import *
 from .forms import *
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView, TemplateView
-
-# menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
-from .serializers import GameSerializer
 
 menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Расписание матчей", 'url_name': 'list_game'},
         {'title': "Архив сыгранных матчей", 'url_name': 'archive_game'},
         #        {'title': "Статистика игроков", 'url_name': 'stat_player'},
+        {'title': "Выход", 'url_name': 'logout'},
         ]
-m_a = [{'title': "Выйти", 'url_name': 'list_players'},]
+m_a = [{'title': "Выйти", 'url_name': 'list_players'}, ]
+
 
 def main_page(request):
     if not request.user.has_perm('auth.view_user'):
         return redirect('login')
     else:
-        return render(request, 'bd_team/base.html', {'menu': menu, 'title': 'Главная'})
+        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная'})
 
 
 def add_page_player(request):
@@ -123,11 +118,13 @@ class ListChartGame(ListView):
         context['menu'] = menu
         context['title'] = "Расписание игр"
         context['but'] = "Архивировать"
+        context['act'] = True
         context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
         return context
 
     def get_queryset(self):
         return Game.objects.filter(archive=False)
+
 
 class ListArchiveGame(ListView):
     model = Game.objects.filter(archive=True)
@@ -138,6 +135,7 @@ class ListArchiveGame(ListView):
         context['menu'] = menu
         context['title'] = "Расписание игр"
         context['but'] = 'Активировать'
+        context['act'] = False
         context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
         return context
 
@@ -146,7 +144,7 @@ class ListArchiveGame(ListView):
 
 
 def game_info(request, game_id):
-    p_game =Player_Game.objects.filter(game_id=game_id).order_by('-count_washers')
+    p_game = Player_Game.objects.filter(game_id=game_id).order_by('-count_washers')
     if Player_Game.check_game_status(game_id):
         context = {
             'title': 'Состав игроков',
@@ -185,8 +183,9 @@ def add_game_info(request, game_id):
     else:
         return redirect('list_game')
 
+
 def change_archive(request, game_id):
-    game = Game.objects.get(id = game_id)
+    game = Game.objects.get(id=game_id)
     if game.archive:
         game.archive = False
     else:
@@ -194,18 +193,20 @@ def change_archive(request, game_id):
     game.save()
     return redirect('list_game')
 
+
 class LoginUser(LoginView):
-     form_class = LoginUserForm
-     template_name = 'bd_team/login.html'
+    form_class = LoginUserForm
+    template_name = 'bd_team/login.html'
 
-     def get_success_url(self):
-         return reverse_lazy('main_page')
+    def get_success_url(self):
+        return reverse_lazy('main_page')
 
-     def get_context_data(self, *, object_list=None, **kwargs):
-         context = super().get_context_data(**kwargs)
-         context['title'] = "Авторизация"
-         context['but'] = "Войти"
-         return context
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Авторизация"
+        context['but'] = "Войти"
+        return context
+
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
@@ -213,32 +214,43 @@ class RegisterUser(CreateView):
     success_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
-         context = super().get_context_data(**kwargs)
-         context['title'] = "Добавление пользователя"
-         context['but'] = "Добавить"
-         return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Добавление пользователя"
+        context['but'] = "Добавить"
+        return context
 
-def сhange_data_exel(selection):
-    dict = {}
-    for h in selection[0].keys():
-        l = []
-        for i in range(len(selection) - 1):
-            l.append(selection[i][h])
-        dict[h] = l
-    return dict
 
 def export_exel_active_game(request):
     game = Game.objects.filter(archive=False).values()
-    dict = сhange_data_exel(game)
     print(dict)
-    df = pd.DataFrame(dict)
+    df = pd.DataFrame(game)
     df.to_excel('F:/file/game_active.xlsx')
     return redirect('list_game')
 
+
 def export_json_active_game(request):
-    qs = Game.objects.all()
-    qs_json = serializers.serialize('json', qs)
-    print(qs_json)
+    game = Game.objects.filter(archive=False)
+    game_json = serializers.serialize('json', game)
     with open('F:/file/game_active.json', 'w') as f:
-        f.write(json.dumps(qs_json))
+        f.write(json.dumps(game_json))
     return redirect('list_game')
+
+
+def export_exel_archive_game(request):
+    game = Game.objects.filter(archive=True).values()
+    print(dict)
+    df = pd.DataFrame(game)
+    df.to_excel('F:/file/game_archive.xlsx')
+    return redirect('archive_game')
+
+
+def export_json_archive_game(request):
+    game = Game.objects.filter(archive=True)
+    game_json = serializers.serialize('json', game)
+    with open('F:/file/game_archive.json', 'w') as f:
+        f.write(json.dumps(game_json))
+    return redirect('archive_game')
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')

@@ -9,6 +9,7 @@
       {% endfor %}
         <th scope="col">Добавить состав</th>
         <th scope="col">{{but}}</th>
+        <th scope="col">Удалить</th>
     </tr>
       {% for g in object_list %}
         <tr>
@@ -25,16 +26,23 @@
          <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.judge|default_if_none:'-' }}</a>
          <th><a href="{%url 'add_game_info' g.id %}"  ><button class="btn btn-success" type="submit"></button></a></th>
          <th><a href="{%url 'add_archive' g.id%}"  ><button class="btn btn-success" type="submit"></button></a></th>
+         <th scope="col"> <a href="{%url 'delete_game' g.id%}"  ><button class="btn btn-success" type="submit">Удалить матч</button></a></th>
         </tr>
       {% endfor %}
 </table>
       {% else %}
      <p>Нет данных об играх</p>
       {% endif %}
+{% if act %}
      <div class="btn-group">
      <a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit">Добавить матч</button></a>
      <a href="{%url 'export_active_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
      <a href="{%url 'export_active_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
      </div>
-
+{%else%}
+     <div class="btn-group">
+     <a href="{%url 'export_archive_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
+     <a href="{%url 'export_archive_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
+     </div>
+{% endif %}
 {% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, AbstractUser
 
 from .models import *
 
+
 class PlayerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -12,12 +13,14 @@ class PlayerForm(forms.ModelForm):
 
     class Meta:
         model = Player
-        fields = ['name','date_birth','role','citizenship','number', 'photo']
+        fields = ['name', 'date_birth', 'role', 'citizenship', 'number', 'photo']
         widgets = {
-            'name': forms.TextInput(attrs = {'class':'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
             'date_birth': forms.TextInput(attrs={'class': 'form-control'}),
             'citizenship': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
 class GameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -27,6 +30,7 @@ class GameForm(forms.ModelForm):
         model = Game
         fields = ['date', 'opponent', 'area', 'role', 'score']
 
+
 class GamePlayerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -34,17 +38,19 @@ class GamePlayerForm(forms.ModelForm):
 
     class Meta:
         model = Player_Game
-        fields = ['player','game', 'count_washers', 'yellow_card', 'read_card']
+        fields = ['player', 'game', 'count_washers', 'yellow_card', 'read_card']
+
 
 class ArchiveGameNum(forms.Form):
     num = forms.IntegerField(label='Номер матча')
+
 
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
+
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-
