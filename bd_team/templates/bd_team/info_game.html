@@ -1,20 +1,19 @@
 {% extends 'bd_team/base.html' %}
-
 {% block content %}
 <table class="table table-striped table-hover">
-    <tr>
+   <tr>
       {% for h in head %}
       <th scope="col">{{ h }}</th>
       {% endfor %}
-        {% for g in p_game%}
-    </tr>
-        <tr>
-         <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.id }}</button></a></th>
-         <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.player }}</button></a></th>
-         <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.count_washers }}</button></a></th>
-         <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.yellow_card }}</button></a></th>
-         <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.read_card }}</button></a></th>
-        </tr>
-    {%endfor%}
+      {% for g in p_game%}
+   </tr>
+   <tr>
+      <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.id }}</button></a></th>
+      <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.player }}</button></a></th>
+      <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.count_washers }}</button></a></th>
+      <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.yellow_card }}</button></a></th>
+      <th scope="col"><a href="{%url 'update_game' g.id%}" ><button type="button" class="btn btn-sm btn-outline-secondary">{{ g.read_card }}</button></a></th>
+   </tr>
+   {%endfor%}
 </table>
 {% endblock %}

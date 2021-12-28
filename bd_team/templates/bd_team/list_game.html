@@ -1,48 +1,47 @@
 {% extends 'bd_team/base.html' %}
-
 {% block content %}
-    {% if object_list %}
+{% if object_list %}
 <table class="table table-striped table-hover">
-    <tr>
+   <tr>
       {% for h in head %}
       <th scope="col">{{ h }}</th>
       {% endfor %}
-        <th scope="col">Добавить состав</th>
-        <th scope="col">{{but}}</th>
-        <th scope="col">Удалить</th>
-    </tr>
-      {% for g in object_list %}
-        <tr>
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.id }}</a></th>
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.date }}</a></th>
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.opponent }}</a></th>
-        {%if g.area %}
-             <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">+</a></th>
-        {% else %}
-             <th><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">-</a></th>
-        {% endif %}
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.role }}</a></th>
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.score|default_if_none:'-' }}</a></th>
-         <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.judge|default_if_none:'-' }}</a>
-         <th><a href="{%url 'add_game_info' g.id %}"  ><button class="btn btn-success" type="submit"></button></a></th>
-         <th><a href="{%url 'add_archive' g.id%}"  ><button class="btn btn-success" type="submit"></button></a></th>
-         <th scope="col"> <a href="{%url 'delete_game' g.id%}"  ><button class="btn btn-success" type="submit">Удалить матч</button></a></th>
-        </tr>
-      {% endfor %}
-</table>
+      <th scope="col">Добавить состав</th>
+      <th scope="col">{{but}}</th>
+      <th scope="col">Удалить</th>
+   </tr>
+   {% for g in object_list %}
+   <tr>
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.id }}</a></th>
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.date }}</a></th>
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.opponent }}</a></th>
+      {%if g.area %}
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">+</a></th>
       {% else %}
-     <p>Нет данных об играх</p>
+      <th><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">-</a></th>
       {% endif %}
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.role }}</a></th>
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.score|default_if_none:'-' }}</a></th>
+      <th scope="col"><a href="{%url 'game_info' g.id%}"  style="color:black;" class="nav-link">{{ g.judge|default_if_none:'-' }}</a>
+      <th><a href="{%url 'add_game_info' g.id %}"  ><button class="btn btn-success" type="submit"></button></a></th>
+      <th><a href="{%url 'add_archive' g.id%}"  ><button class="btn btn-success" type="submit"></button></a></th>
+      <th scope="col"> <a href="{%url 'delete_game' g.id%}"  ><button class="btn btn-success" type="submit">Удалить матч</button></a></th>
+   </tr>
+   {% endfor %}
+</table>
+{% else %}
+<p>Нет данных об играх</p>
+{% endif %}
 {% if act %}
-     <div class="btn-group">
-     <a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit">Добавить матч</button></a>
-     <a href="{%url 'export_active_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
-     <a href="{%url 'export_active_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
-     </div>
+<div class="btn-group">
+   <a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit">Добавить матч</button></a>
+   <a href="{%url 'export_active_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
+   <a href="{%url 'export_active_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
+</div>
 {%else%}
-     <div class="btn-group">
-     <a href="{%url 'export_archive_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
-     <a href="{%url 'export_archive_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
-     </div>
+<div class="btn-group">
+   <a href="{%url 'export_archive_game_exel'%}"  ><button class="btn btn-success" type="submit">Выгрузить в exel</button></a>
+   <a href="{%url 'export_archive_game_json'%}"  ><button class="btn btn-success" type="submit">Выгрузить в json</button></a>
+</div>
 {% endif %}
 {% endblock %}

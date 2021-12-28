@@ -1,26 +1,24 @@
 {% extends 'bd_team/base.html' %}
-
 {% block content %}
-    {% if object_list %}
+{% if object_list %}
 <table class="table table-striped table-hover" xmlns="http://www.w3.org/1999/html">
-    <tr>
+   <tr>
       {% for h in head %}
       <th scope="col">{{ h }}</th>
       {% endfor %}
-    </tr>
-
-    <div class="btn-group" role="group" aria-label="Basic example">
+   </tr>
+   <div class="btn-group" role="group" aria-label="Basic example">
       {% for p in object_list %}
-        <tr>
-        <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.number}}.</a></th>
-        <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.name}}   </a></th>
-        <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.role}}   </a></th>
-        </tr>
-    </div>
-      {% endfor %}
+      <tr>
+         <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.number}}.</a></th>
+         <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.name}}   </a></th>
+         <th> <a href="{{ p.get_absolute_url}}"  style="color:black;" class="nav-link"> {{ p.role}}   </a></th>
+      </tr>
+   </div>
+   {% endfor %}
 </table>
-      {% else %}
-     <p>Нет данных об игроках</p>
-      {% endif %}
-     <a href="{%url 'add_player' %}"  ><button class="btn btn-success" type="submit">Добавить игрока</button></a>
+{% else %}
+<p>Нет данных об игроках</p>
+{% endif %}
+<a href="{%url 'add_player' %}"  ><button class="btn btn-success" type="submit">Добавить игрока</button></a>
 {% endblock %}

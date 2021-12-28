@@ -15,14 +15,16 @@ menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Выход", 'url_name': 'logout'},
         ]
 
+
 def main_page(request):
     if not request.user.has_perm('auth.view_user'):
         return redirect('login')
     else:
+        player = Player.objects.all().order_by('role')
+        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная', 'player': player})
 
-        player = Player.objects.all().order_by('name')
-        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная', 'player':player})
 
+# -------Work player -------
 
 def add_page_player(request):
     if request.method == 'POST':
@@ -42,7 +44,7 @@ def add_page_player(request):
 
 class PlayerUpdateView(UpdateView):
     model = Player
-    template_name = 'bd_team/update_page_player.html'
+    template_name = 'bd_team/update.html'
     form_class = PlayerForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -56,34 +58,7 @@ class PlayerDeleteView(DeleteView):
     model = Player
     fields = '__all__'
     success_url = reverse_lazy('list_players')
-    template_name = 'bd_team/delete_player.html'
-
-
-class GameCreateView(CreateView):
-    model = Game
-    template_name = 'bd_team/add_game.html'
-    success_url = reverse_lazy('list_пфьу')
-    fields = '__all__'
-
-
-class GameUpdateView(UpdateView):
-    model = Player_Game
-    template_name = 'bd_team/update_game.html'
-    success_url = reverse_lazy('list_game')
-    form_class = GamePlayerForm
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Изменение данных"
-        return context
-
-
-class GameDeleteView(DeleteView):
-    model = Game
-    fields = '__all__'
-    success_url = reverse_lazy('list_game')
-    template_name = 'bd_team/delete_game.html'
+    template_name = 'bd_team/delete.html'
 
 
 def show_player_card(request, player_id):
@@ -108,6 +83,35 @@ class ListPlayer(ListView):
         return context
 
 
+# -------Work game -------
+
+class GameCreateView(CreateView):
+    model = Game
+    template_name = 'bd_team/add_game.html'
+    success_url = reverse_lazy('list_пфьу')
+    fields = '__all__'
+
+
+class GameUpdateView(UpdateView):
+    model = Player_Game
+    template_name = 'bd_team/update.html'
+    success_url = reverse_lazy('list_game')
+    form_class = GamePlayerForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = "Изменение данных"
+        return context
+
+
+class GameDeleteView(DeleteView):
+    model = Game
+    fields = '__all__'
+    success_url = reverse_lazy('list_game')
+    template_name = 'bd_team/delete.html'
+
+
 class ListChartGame(ListView):
     model = Game
     template_name = 'bd_team/list_game.html'
@@ -125,22 +129,7 @@ class ListChartGame(ListView):
         return Game.objects.filter(archive=False)
 
 
-class ListArchiveGame(ListView):
-    model = Game.objects.filter(archive=True)
-    template_name = 'bd_team/list_game.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Расписание игр"
-        context['but'] = 'Активировать'
-        context['act'] = False
-        context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
-        return context
-
-    def get_queryset(self):
-        return Game.objects.filter(archive=True)
-
+# -------Work game info -------
 
 def game_info(request, game_id):
     p_game = Player_Game.objects.filter(game_id=game_id).order_by('-count_washers')
@@ -183,6 +172,25 @@ def add_game_info(request, game_id):
         return redirect('list_game')
 
 
+# -------Work archive -------
+
+class ListArchiveGame(ListView):
+    model = Game.objects.filter(archive=True)
+    template_name = 'bd_team/list_game.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = "Расписание игр"
+        context['but'] = 'Активировать'
+        context['act'] = False
+        context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
+        return context
+
+    def get_queryset(self):
+        return Game.objects.filter(archive=True)
+
+
 def change_archive(request, game_id):
     game = Game.objects.get(id=game_id)
     if game.archive:
@@ -192,6 +200,8 @@ def change_archive(request, game_id):
     game.save()
     return redirect('list_game')
 
+
+# -------User -------
 
 class LoginUser(LoginView):
     form_class = LoginUserForm
@@ -207,16 +217,12 @@ class LoginUser(LoginView):
         return context
 
 
-class RegisterUser(CreateView):
-    form_class = RegisterUserForm
-    template_name = 'bd_team/login.html'
-    success_url = reverse_lazy('login')
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Добавление пользователя"
-        context['but'] = "Добавить"
-        return context
+
+# -------Export -------
 
 
 def export_exel_active_game(request):
@@ -250,6 +256,13 @@ def export_json_archive_game(request):
         f.write(json.dumps(game_json))
     return redirect('archive_game')
 
-def logout_user(request):
-    logout(request)
-    return redirect('login')
+# class RegisterUser(CreateView):
+#    form_class = RegisterUserForm
+#    template_name = 'bd_team/login.html'
+#    success_url = reverse_lazy('login')
+
+#    def get_context_data(self, *, object_list=None, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        context['title'] = "Добавление пользователя"
+#        context['but'] = "Добавить"
+#        return context

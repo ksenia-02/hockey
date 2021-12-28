@@ -5,13 +5,14 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
+
 class Status(models.Model):
     name = models.CharField(max_length=100, verbose_name='Статус игры')
 
     def __str__(self):
         return self.name
 
-    def ch(self):
+    def check_game(self):
         return self.id == 1
 
 
@@ -39,7 +40,7 @@ class Game(models.Model):
         return reverse('game_info', kwargs={'game_id': self.pk})
 
     def check_status(self):
-        return Status.objects.get(name=self.role).ch()
+        return Status.objects.get(name=self.role).check_game()
 
 
 class Category_Player(models.Model):
@@ -54,12 +55,12 @@ class Player(models.Model):
     date_birth = models.DateField(null=True, verbose_name="Дата рождения")
     citizenship = models.CharField(max_length=100, null=True, verbose_name="Гражданство")
     role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null=True, verbose_name="Амплуа")
-    number = models.IntegerField(null=False, unique=True, verbose_name="Номер")
-    photo = models.ImageField(null=True,blank = True,  upload_to="photos/", verbose_name="Фото")
+    number = models.IntegerField(null=True, unique=True, verbose_name="Номер")
+    photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Фото")
     base = models.BooleanField(default=False, verbose_name='Основа')
     indicator = models.IntegerField(default=0, verbose_name='Показатель')
-    biog = models.TextField(null = True, blank = True, verbose_name='Отображаемая информация')
-    public_photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Публичное Фото")
+    biog = models.TextField(null=True, blank=True, verbose_name='Отображаемая информация')
+    public_photo = models.ImageField(null=False, blank=False, upload_to="photos/", verbose_name="Публичное Фото")
 
     class Meta():
         ordering = ['number']
@@ -92,4 +93,3 @@ class Player_Game(models.Model):
         game = Game.objects.get(id=id_game)
         print(game.check_status())
         return game.check_status()
-

@@ -42,8 +42,17 @@ class GamePlayerForm(forms.ModelForm):
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label='Логин  ', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password = forms.CharField(label='Пароль  ', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = Player
+        fields = ['name', 'date_birth', 'role', 'citizenship', 'number', 'photo', 'biog', 'indicator', 'public_photo']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_birth': forms.TextInput(attrs={'class': 'form-control'}),
+            'citizenship': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class RegisterUserForm(UserCreationForm):
