@@ -5,12 +5,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import FormMixin
+import pandas as pd
+import json
+
+from django.core import serializers
 
 from .models import *
 from .forms import *
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, TemplateView
 
 # menu = ['Расписание игр', 'Карточка игрока', 'Рейтинг игроков']
+from .serializers import GameSerializer
+
 menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Расписание матчей", 'url_name': 'list_game'},
         {'title': "Архив сыгранных матчей", 'url_name': 'archive_game'},
@@ -211,3 +217,28 @@ class RegisterUser(CreateView):
          context['title'] = "Добавление пользователя"
          context['but'] = "Добавить"
          return context
+
+def сhange_data_exel(selection):
+    dict = {}
+    for h in selection[0].keys():
+        l = []
+        for i in range(len(selection) - 1):
+            l.append(selection[i][h])
+        dict[h] = l
+    return dict
+
+def export_exel_active_game(request):
+    game = Game.objects.filter(archive=False).values()
+    dict = сhange_data_exel(game)
+    print(dict)
+    df = pd.DataFrame(dict)
+    df.to_excel('F:/file/game_active.xlsx')
+    return redirect('list_game')
+
+def export_json_active_game(request):
+    qs = Game.objects.all()
+    qs_json = serializers.serialize('json', qs)
+    print(qs_json)
+    with open('F:/file/game_active.json', 'w') as f:
+        f.write(json.dumps(qs_json))
+    return redirect('list_game')

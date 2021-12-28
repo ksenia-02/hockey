@@ -22,7 +22,8 @@ urlpatterns = [
     path('infogame/<int:game_id>/', game_info, name = 'game_info'),
     path('updategame/<int:pk>/', GameUpdateView.as_view(), name='update_game'),
     path('deletegame/<int:pk>/', GameDeleteView.as_view(), name='delete_game'),
-
+    path('exportactivegame/exel/', export_exel_active_game, name = 'export_active_game_exel'),
+    path('exportactivegame/json/', export_json_active_game, name='export_active_game_json'),
 ]
 
 if settings.DEBUG:
