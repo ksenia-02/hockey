@@ -12,9 +12,10 @@ urlpatterns = [
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
     # path('register/', RegisterUser.as_view(), name='register'),
+    path('erroraccess/', error, name = 'error_access'),
 
     # -------Player-------
-    path('addplayer/', add_page_player, name='add_player'),
+    path('addplayer/', AddPlayer.as_view(), name='add_player'),
     path('listplayer/', ListPlayer.as_view(), name='list_players'),
     path('player/<int:player_id>/', show_player_card, name='player'),
     path('update/<int:pk>/', PlayerUpdateView.as_view(), name='update_player'),
@@ -37,8 +38,10 @@ urlpatterns = [
     # -------Export-------
     path('exportactivegame/exel/', export_exel_active_game, name='export_active_game_exel'),
     path('exportactivegame/json/', export_json_active_game, name='export_active_game_json'),
+    path('exportactivegame/pdf/', export_pdf_active_game, name='export_active_game_pdf'),
     path('exportaarchivegame/exel/', export_exel_archive_game, name='export_archive_game_exel'),
     path('exportarchivegame/json/', export_json_archive_game, name='export_archive_game_json'),
+    path('exportarchivegame/pdf/', export_pdf_archive_game, name='export_archive_game_pdf'),
 ]
 
 if settings.DEBUG:
