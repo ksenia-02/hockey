@@ -36,17 +36,17 @@
    <a href="{%url 'add_game' %}"  ><button class="btn btn-success" type="submit">Добавить матч</button></a>
 <div class="position-absolute bottom-0 end-0">
    <div class="btn-group">
-      <a href="{%url 'export_active_game_exel'%}"  ><button  class="btn btn-primary btn-sm" type="submit">Выгрузить в exel</button></a>
-      <a href="{%url 'export_active_game_json'%}"  ><button class="btn btn-primary btn-sm" type="submit">Выгрузить в json</button></a>
-      <a href="{%url 'export_active_game_pdf'%}"  ><button class="btn btn-primary btn-sm" type="submit">Выгрузить в pdf</button></a>
+      <a href="{%url 'export_game_exel' 0%}"  ><button  class="btn btn-primary btn-sm" type="submit">Выгрузить в exel</button></a>
+      <a href="{%url 'export_game_json' 0%}"  ><button class="btn btn-primary btn-sm" type="submit">Выгрузить в json</button></a>
+      <a href="{%url 'export_game_pdf' 0%}"  ><button class="btn btn-primary btn-sm" type="submit">Выгрузить в pdf</button></a>
    </div>
 </div>
 {%else%}
 <div class="position-absolute bottom-0 end-0">
    <div class="btn-group">
-      <a href="{%url 'export_archive_game_exel'%}" > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в exel</button></a>
-      <a href="{%url 'export_archive_game_json'%}" > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в json</button></a>
-      <a href="{%url 'export_active_game_pdf'%}"  > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в pdf</button></a>
+      <a href="{%url 'export_game_exel' 1%}" > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в exel</button></a>
+      <a href="{%url 'export_game_json' 1%}" > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в json</button></a>
+      <a href="{%url 'export_game_pdf'  1%}"  > <button class="btn btn-primary btn-sm" type="submit">Выгрузить в pdf</button></a>
    </div>
 </div>
 {% endif %}

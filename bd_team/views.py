@@ -288,56 +288,35 @@ def export_json_active_game(request):
     return redirect('list_game')
 
 
-def export_exel_archive_game(request):
-    game = Game.objects.filter(archive=True).values()
-    print(dict)
+def export_exel_game(request, fl):
+    game = Game.objects.filter(archive=fl).values()
     df = pd.DataFrame(game)
-    df.to_excel('F:/file/game_archive.xlsx')
-    return redirect('archive_game')
+    if fl:
+        df.to_excel('F:/file/game_archive.xlsx')
+        return redirect('archive_game')
+    else:
+        df.to_excel('F:/file/game_active.xlsx')
+        return redirect('list_game')
 
 
-def export_json_archive_game(request):
-    game = Game.objects.filter(archive=True)
+def export_json_game(request, fl):
+    game = Game.objects.filter(archive=fl)
     game_json = serializers.serialize('json', game)
-    with open('F:/file/game_archive.json', 'w') as f:
-        f.write(json.dumps(game_json))
-    return redirect('archive_game')
-'''
-def export_pdf_active_game(request):
-    print(request.user.id)
-    id = request.user.id
-
-    income = get_table(id)
-
-    context = {'array': income, 'name_column': ['Название', 'Сумма', 'Тип']}
-    template_path = 'budget/pdfS.html'
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-
-    pisa_status = pisa.CreatePDF(
-        html, dest=response)
-
-    # if error then show some funy view
-    if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
-'''
+    if fl:
+        with open('F:/file/game_archive.json', 'w') as f:
+            f.write(json.dumps(game_json))
+        return redirect('archive_game')
+    else:
+        with open('F:/file/game_active.json', 'w') as f:
+            f.write(json.dumps(game_json))
+        return redirect('list_game')
 
 
-def export_pdf_archive_game(request):
-    with open('active_game.pdf', 'rb') as pdf:
-        response = HttpResponse(pdf.read(),content_type='application/pdf')
-        response['Content-Disposition'] = 'filename=some_file.pdf'
-        return response
-
-
-def export_pdf_active_game(request):
-    game = Game.objects.filter(archive=False)
+def export_pdf_game(request, fl):
+    game = Game.objects.filter(archive=fl)
     styleSheet = getSampleStyleSheet()
 
-    pdfmetrics.registerFont(TTFont('DejaVuSerif', "F:/coursework/bd_team/DejaVuSerif.ttf", 'UTF-8'))
+    pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf', 'UTF-8'))
 
     def StringGuy(text):
         return f'<font name="DejaVuSerif">{text}</font>'
@@ -362,7 +341,10 @@ def export_pdf_active_game(request):
         list.append(ParagGuy(g.score))
         data.append(list)
         list = []
-    fileName = 'Game.pdf'
+    if fl:
+        fileName = 'ArchiveGame.pdf'
+    else:
+        fileName = 'ActiveGame.pdf'
 
     pdf = SimpleDocTemplate(
         fileName,
@@ -382,27 +364,17 @@ def export_pdf_active_game(request):
     ])
     table.setStyle(style)
 
-    # 2) Alternate backgroud color
-    rowNumb = len(data)
-    for i in range(1, rowNumb):
-        if i % 2 == 0:
-            bc = colors.burlywood
-        else:
-            bc = colors.beige
-
-        ts = TableStyle(
-            [('BACKGROUND', (0, i), (-1, i), bc)]
-        )
-        table.setStyle(ts)
+    table.setStyle(TableStyle([('ALIGN', (1, 1), (-2, -2), 'RIGHT'),
+                            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                            ]))
     elems = []
     elems.append(table)
-
     pdf.build(elems)
-###########################################################################
-    return redirect('list_game')
-
-
-
+    if fl:
+        return redirect('archive_game')
+    else:
+        return redirect('list_game')
 
 # class RegisterUser(CreateView):
 #    form_class = RegisterUserForm

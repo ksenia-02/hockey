@@ -36,12 +36,9 @@ urlpatterns = [
     path('infogame/<int:game_id>/', game_info, name='game_info'),
 
     # -------Export-------
-    path('exportactivegame/exel/', export_exel_active_game, name='export_active_game_exel'),
-    path('exportactivegame/json/', export_json_active_game, name='export_active_game_json'),
-    path('exportactivegame/pdf/', export_pdf_active_game, name='export_active_game_pdf'),
-    path('exportaarchivegame/exel/', export_exel_archive_game, name='export_archive_game_exel'),
-    path('exportarchivegame/json/', export_json_archive_game, name='export_archive_game_json'),
-    path('exportarchivegame/pdf/', export_pdf_archive_game, name='export_archive_game_pdf'),
+    path('exportgame/exel/<int:fl>/', export_exel_game, name='export_game_exel'),
+    path('exportgame/json/<int:fl>/', export_json_game, name='export_game_json'),
+    path('exportgame/pdf/<int:fl>/', export_pdf_game, name='export_game_pdf'),
 ]
 
 if settings.DEBUG:
