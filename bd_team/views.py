@@ -1,8 +1,10 @@
 import json
 import pandas as pd
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+
 from django.contrib.auth.views import LoginView
 from django.core import serializers
 from django.http import HttpResponse
@@ -25,6 +27,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.utils import fileName2FSEnc
 
 from .forms import *
+from .permission import *
 
 menu = [{'title': "Игроки", 'url_name': 'list_players'},
         {'title': "Расписание матчей", 'url_name': 'list_game'},
@@ -49,12 +52,13 @@ def main_page(request):
 
 # -------Work player -------
 
-class AddPlayer(PermissionRequiredMixin, CreateView):
+class AddPlayer(MyPermissionMixin, CreateView):
+    raise_exception = False
     model = Player
     fields = '__all__'
     permission_required = 'bd_team.add_player'
     template_name = 'bd_team/add_player.html'
-    success_url = reverse_lazy('players_list')
+    success_url = reverse_lazy('list_players')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,27 +66,7 @@ class AddPlayer(PermissionRequiredMixin, CreateView):
         context['title'] = "Добавление игрока"
         return context
 
-
-# def add_page_player(request):
-#    if request.user.has_perm('polls.can_add'):
-#        if request.method == 'POST':
-#            form = PlayerForm(request.POST, request.FILES)
-#            if form.is_valid():
-#                form.save()
-#                return redirect('list_players')
-#        else:
-#            form = PlayerForm()
-#        context = {
-#            'title': 'Добавление игрока',
-#            'menu': menu,
-#            'form': form,
-#        }
-#        return render(request, 'bd_team/add_player.html', context)
-#    else:
-#        return render(request, 'bd_team/error.html')
-
-
-class PlayerUpdateView(PermissionRequiredMixin, UpdateView):
+class PlayerUpdateView(MyPermissionMixin, UpdateView):
     model = Player
     permission_required = 'bd_team.change_player'
     template_name = 'bd_team/update.html'
@@ -95,14 +79,14 @@ class PlayerUpdateView(PermissionRequiredMixin, UpdateView):
         return context
 
 
-class PlayerDeleteView(PermissionRequiredMixin, DeleteView):
+class PlayerDeleteView(MyPermissionMixin, DeleteView):
     model = Player
     permission_required = 'bd_team.delete_player'
     fields = '__all__'
     success_url = reverse_lazy('list_players')
     template_name = 'bd_team/delete.html'
 
-
+@permission_required('bd_team.view_player')
 def show_player_card(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
     context = {
@@ -127,7 +111,7 @@ class ListPlayer(ListView):
 
 # -------Work game -------
 
-class GameCreateView(PermissionRequiredMixin, CreateView):
+class GameCreateView(MyPermissionMixin, CreateView):
     model = Game
     permission_required = 'bd_team.add_game'
     template_name = 'bd_team/add_game.html'
@@ -135,7 +119,7 @@ class GameCreateView(PermissionRequiredMixin, CreateView):
     fields = '__all__'
 
 
-class GameUpdateView(PermissionRequiredMixin, UpdateView):
+class GameUpdateView(MyPermissionMixin, UpdateView):
     model = Player_Game
     permission_required = 'bd_team.change_game'
     template_name = 'bd_team/update.html'
@@ -152,7 +136,7 @@ class GameUpdateView(PermissionRequiredMixin, UpdateView):
         return 'error_access'
 
 
-class GameDeleteView(PermissionRequiredMixin, DeleteView):
+class GameDeleteView(MyPermissionMixin, DeleteView):
     model = Game
     permission_required = 'bd_team.delete_game'
     fields = '__all__'
@@ -216,7 +200,7 @@ def add_game_info(request, game_id):
 
 # -------Work archive -------
 
-class ListArchiveGame(PermissionRequiredMixin, ListView):
+class ListArchiveGame(MyPermissionMixin, ListView):
     model = Game.objects.filter(archive=True)
     permission_required = 'bd_team.view_game'
     template_name = 'bd_team/list_game.html'
@@ -270,23 +254,6 @@ def logout_user(request):
 
 
 # -------Export -------
-
-
-def export_exel_active_game(request):
-    game = Game.objects.filter(archive=False).values()
-    print(dict)
-    df = pd.DataFrame(game)
-    df.to_excel('F:/file/game_active.xlsx')
-    return redirect('list_game')
-
-
-def export_json_active_game(request):
-    game = Game.objects.filter(archive=False)
-    game_json = serializers.serialize('json', game)
-    with open('F:/file/game_active.json', 'w') as f:
-        f.write(json.dumps(game_json))
-    return redirect('list_game')
-
 
 def export_exel_game(request, fl):
     game = Game.objects.filter(archive=fl).values()

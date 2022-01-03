@@ -1,7 +1,7 @@
 {% extends 'bd_team/base.html' %}
 {% block content %}
-<div class = "features">
-   <h2 class="card-text">Вы не можете совершить данное действие!!!</h2>
+<div class="position-absolute top-50 start-50 translate-middle">
+   <h2 class="card-text">У вас нет доступа к данному  действию</h2>
    <a href="{%url 'main_page'%}" ><button class="btn btn-success" type="submit">Главное меню</button></a>
 </div>
 {% endblock %}

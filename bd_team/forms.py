@@ -20,7 +20,6 @@ class PlayerForm(forms.ModelForm):
             'citizenship': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-
 class GameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):

@@ -50,17 +50,28 @@ class Category_Player(models.Model):
         return self.name
 
 
-class Player(models.Model):
-    name = models.CharField(max_length=100, null=False, verbose_name="ФИО")
+class PublicInfoPlayer(models.Model):
+    biog = models.TextField(null=True, blank=True, verbose_name='Отображаемая информация')
+    public_photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Публичное Фото")
+    count_cup = models.IntegerField(default=0, verbose_name='Количество кубков')
+    class Meta:
+        abstract = True
+
+class PrivateInfoPlayer(models.Model):
+    photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Фото")
+    weight = models.IntegerField(null=True, verbose_name="Вес")
+    height = models.IntegerField(null=True, verbose_name="Рост")
     date_birth = models.DateField(null=True, verbose_name="Дата рождения")
     citizenship = models.CharField(max_length=100, null=True, verbose_name="Гражданство")
-    role = models.ForeignKey('Category_Player', on_delete=models.PROTECT, null=True, verbose_name="Амплуа")
-    number = models.IntegerField(null=True, unique=True, verbose_name="Номер")
-    photo = models.ImageField(null=True, blank=True, upload_to="photos/", verbose_name="Фото")
-    base = models.BooleanField(default=False, verbose_name='Основа')
+    class Meta:
+        abstract = True
+
+class Player(PrivateInfoPlayer, PublicInfoPlayer):
+    name = models.CharField(max_length=100, null=False, verbose_name="ФИО")
     indicator = models.IntegerField(default=0, verbose_name='Показатель')
-    biog = models.TextField(null=True, blank=True, verbose_name='Отображаемая информация')
-    public_photo = models.ImageField(null=False, blank=False, upload_to="photos/", verbose_name="Публичное Фото")
+    role = models.ForeignKey('Category_Player', on_delete=models.PROTECT,  null=True, verbose_name="Амплуа")
+    number = models.IntegerField(null=True, unique=True, verbose_name="Номер")
+    base = models.BooleanField(default=False, verbose_name='Основа')
 
     class Meta():
         ordering = ['number']
