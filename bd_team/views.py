@@ -3,7 +3,7 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.views import LoginView
 from django.core import serializers
@@ -28,31 +28,22 @@ from reportlab.lib.utils import fileName2FSEnc
 
 from .forms import *
 from .permission import *
+from .DataMixin import *
 
-menu = [{'title': "Игроки", 'url_name': 'list_players'},
-        {'title': "Расписание матчей", 'url_name': 'list_game'},
-        {'title': "Архив сыгранных матчей", 'url_name': 'archive_game'},
-        {'title': "Выход", 'url_name': 'logout'},
-        ]
+class MainPage(DataMixin, LoginRequiredMixin, ListView):
+    model = Player
+    login_url = reverse_lazy('login')
+    template_name = 'bd_team/main.html'
 
-
-# permission_player = ('bd_team.change_player', 'bd_team.view_game ', 'bd_team.view_player_game', 'bd_team.change_player',)
-# permission_coach = ('bd_team.view_player', 'bd_team.view_game ', 'bd_team.view_player_game',
-#                     'bd_team.add_player', 'bd_team.add_game ', 'bd_team.add_player_game',
-#                    'bd_team.delete_player', 'bd_team.delete_game ', 'bd_team.delete_player_game',
-#                     'bd_team.change_player', 'bd_team.change_game ', 'bd_team.change_player_game',)
-
-def main_page(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    else:
-        player = Player.objects.all().order_by('role')
-        return render(request, 'bd_team/main.html', {'menu': menu, 'title': 'Главная', 'player': player})
-
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Главная страница")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
 
 # -------Work player -------
 
-class AddPlayer(MyPermissionMixin, CreateView):
+class AddPlayer(DataMixin, MyPermissionMixin, CreateView):
     raise_exception = False
     model = Player
     fields = '__all__'
@@ -62,11 +53,12 @@ class AddPlayer(MyPermissionMixin, CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Добавление игрока"
+        c_def = self.get_user_context(title="Добавление игрока")
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
 
-class PlayerUpdateView(MyPermissionMixin, UpdateView):
+
+class PlayerUpdateView(DataMixin, MyPermissionMixin, UpdateView):
     model = Player
     permission_required = 'bd_team.change_player'
     template_name = 'bd_team/update.html'
@@ -74,12 +66,12 @@ class PlayerUpdateView(MyPermissionMixin, UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Изменение данных об игроке"
+        c_def = self.get_user_context(title="Изменение данных об игроке")
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
 
 
-class PlayerDeleteView(MyPermissionMixin, DeleteView):
+class PlayerDeleteView(DataMixin, MyPermissionMixin, DeleteView):
     model = Player
     permission_required = 'bd_team.delete_player'
     fields = '__all__'
@@ -89,37 +81,39 @@ class PlayerDeleteView(MyPermissionMixin, DeleteView):
 @permission_required('bd_team.view_player')
 def show_player_card(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
-    context = {
-        'title': 'Карточка игрока',
-        'menu': menu,
-        'player': player,
-    }
+    context = get_user_context()
+    context['player'] = player
+    context['title'] = 'Карточка игрока'
     return render(request, 'bd_team/card_player.html', context)
 
 
-class ListPlayer(ListView):
+class ListPlayer(DataMixin, ListView):
     model = Player
     template_name = 'bd_team/players_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Список игроков"
-        context['head'] = ['Номер', 'Имя', 'Амплуа']
+        c_def = self.get_user_context(title= "Список игроков", head= ['Номер', 'Имя', 'Амплуа'])
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
-
 
 # -------Work game -------
 
-class GameCreateView(MyPermissionMixin, CreateView):
+class GameCreateView(DataMixin, MyPermissionMixin, CreateView):
     model = Game
     permission_required = 'bd_team.add_game'
     template_name = 'bd_team/add_game.html'
     success_url = reverse_lazy('list_game')
     fields = '__all__'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Добавление матча")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
 
-class GameUpdateView(MyPermissionMixin, UpdateView):
+
+class GameUpdateView(DataMixin, MyPermissionMixin, UpdateView):
     model = Player_Game
     permission_required = 'bd_team.change_game'
     template_name = 'bd_team/update.html'
@@ -128,33 +122,36 @@ class GameUpdateView(MyPermissionMixin, UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Изменение данных"
+        c_def = self.get_user_context(title= "Изменение данных")
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
 
-    def get_login_url(self):
-        return 'error_access'
 
-
-class GameDeleteView(MyPermissionMixin, DeleteView):
+class GameDeleteView(DataMixin, MyPermissionMixin, DeleteView):
     model = Game
     permission_required = 'bd_team.delete_game'
     fields = '__all__'
     success_url = reverse_lazy('list_game')
     template_name = 'bd_team/delete.html'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Удаление матча")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
 
-class ListChartGame(ListView):
+
+class ListChartGame(DataMixin, ListView):
     model = Game
     template_name = 'bd_team/list_game.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Расписание игр"
-        context['but'] = "Архивировать"
-        context['act'] = True
-        context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
+        c_def = self.get_user_context(title="Расписание матчей",
+                                      but = "Архивировать",
+                                      head =['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья'],
+                                      act=True)
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
 
     def get_queryset(self):
@@ -166,12 +163,10 @@ class ListChartGame(ListView):
 def game_info(request, game_id):
     p_game = Player_Game.objects.filter(game_id=game_id).order_by('-count_washers')
     if Player_Game.check_game_status(game_id):
-        context = {
-            'title': 'Состав игроков',
-            'menu': menu,
-            'p_game': p_game,
-            'head': ['№', 'Игрок', 'Кол-во шайб', 'Желтая карточка', 'Красная карточка'],
-        }
+        context = get_user_context()
+        context['title'] = 'Состав игроков'
+        context['p_game'] = p_game
+        context['head'] = ['№', 'Игрок', 'Кол-во шайб', 'Желтая карточка', 'Красная карточка']
         return render(request, 'bd_team/info_game.html', context)
     else:
         return redirect('list_game')
@@ -187,12 +182,10 @@ def add_game_info(request, game_id):
                 return redirect('list_game')
         else:
             form = GamePlayerForm(initial={'game': game_id})
-        context = {
-            'game_id': game_id,
-            'title': 'Добавление в состав игры',
-            'menu': menu,
-            'form': form,
-        }
+        context = get_user_context()
+        context['game_id'] = game_id
+        context['title'] = 'Добавление в состав игры'
+        context['form'] = form
         return render(request, 'bd_team/add_game_info.html', context)
     else:
         return redirect('list_game')
@@ -200,18 +193,18 @@ def add_game_info(request, game_id):
 
 # -------Work archive -------
 
-class ListArchiveGame(MyPermissionMixin, ListView):
+class ListArchiveGame(DataMixin, MyPermissionMixin, ListView):
     model = Game.objects.filter(archive=True)
     permission_required = 'bd_team.view_game'
     template_name = 'bd_team/list_game.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['menu'] = menu
-        context['title'] = "Расписание игр"
-        context['but'] = 'Активировать'
-        context['act'] = False
-        context['head'] = ['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья']
+        c_def = self.get_user_context(title="Расписание матчей",
+                                      but="Активировать",
+                                      head =['№', 'Дата', 'Соперник', 'Домашняя игра', 'Статус', 'Счёт', 'Судья'],
+                                      act=False)
+        context = dict(list(context.items()) + list(c_def.items()))
         return context
 
     def get_queryset(self):

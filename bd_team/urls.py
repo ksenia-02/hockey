@@ -6,7 +6,7 @@ from .views import *
 # from example.views import MemberList
 
 urlpatterns = [
-    path('', main_page, name='main_page'),
+    path('', MainPage.as_view(), name='main_page'),
 
     # -------User-------
     path('login/', LoginUser.as_view(), name='login'),
